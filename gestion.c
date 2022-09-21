@@ -18,20 +18,8 @@ produit p[100];
 date d[100];
 int n,li=0,v=0;
 
-void ajouter(){
-	int i,m,j=0;
-	printf("Combien de produit vous voulez ajouter : ");	scanf("%d",&n);
-	for(i=li;i<li+n;i++){
-		printf("Les infos du produit n%d\n",i+1);
-		printf("Enter le code : ");			scanf("%d",&p[i].code);
-	
-		printf("Enter le nom : ");			scanf("%s",p[i].nom);
-		printf("Enter le prix : ");			scanf("%f",&p[i].prix);
-		printf("Enter la quantite : ");		scanf("%d",&p[i].quantite);
-		p[i].ttc=p[i].prix+(p[i].prix*15/100);
-		printf("\n");
-	}
-	li+=n;
+void backtomenu(){
+	int m;
 	printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
     scanf("%d",&m);
     system("cls");
@@ -39,6 +27,30 @@ void ajouter(){
         menu();
     else
         close();
+}
+int existe(int cd){
+	int i;
+	for(i=0;i<li;i++){
+		if(cd==p[i].code)
+			return 1;
+	}return 0;
+}
+void ajouter(){
+	int i,m,j=0;
+	printf("Combien de produit vous voulez ajouter : ");	scanf("%d",&n);
+	for(i=li;i<li+n;i++){
+		printf("Les infos du produit n%d\n",i+1);
+	do{	printf("Enter le code : ");			scanf("%d",&p[i].code);
+		}while(existe(p[i].code) ==1);
+		printf("Enter le nom : ");			scanf("%s",p[i].nom);
+		printf("Enter le prix : ");			scanf("%f",&p[i].prix);
+		printf("Enter la quantite : ");		scanf("%d",&p[i].quantite);
+		p[i].ttc=p[i].prix+(p[i].prix*15/100);
+		printf("\n");
+	}
+	li+=n;
+	backtomenu();
+	
 }
 void lister(){
 	produit tmp;
@@ -69,13 +81,7 @@ void lister(){
 			printf("\nProduit n%d",i+1);
 			printf("\t %5d \t %-10s \t   %5d \t %.2f \t %.2f",p[i].code,p[i].nom,p[i].quantite,p[i].prix,p[i].ttc);
 		}
-		printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
-    	scanf("%d",&m);
-    	system("cls");
-    	if (m==1)
-        	menu();
-    	else
-    	    close();
+		backtomenu();
     	
 	}else if(m==3){
 	for (i = 0; i < li; i++) 
@@ -91,13 +97,7 @@ void lister(){
 			printf("\nProduit n%d",i+1);
 			printf("\t %5d \t %-10s \t   %5d \t %.2f \t %.2f",p[i].code,p[i].nom,p[i].quantite,p[i].prix,p[i].ttc);
 		}
-		printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
-    	scanf("%d",&m);
-    	system("cls");
-    	if (m==1)
-        	menu();
-    	else
-    	    close();
+		backtomenu();
 		
 	}else
         close();
@@ -125,13 +125,8 @@ void acheter(){
 		}
 	}if(e==0)
 		printf("\nLe produit n\'existe pas !");
-	printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
-    	scanf("%d",&m);
-    	system("cls");
-    	if (m==1)
-        	menu();
-    	else
-    	    close();
+	
+backtomenu();
 	
 }
 void rechercher(){
@@ -216,21 +211,14 @@ void alimenter(){
 		}
 	}if(e==0)
 		printf("\nLe produit n\'existe pas !");
-	printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
-    	scanf("%d",&m);
-    	system("cls");
-    	if (m==1)
-        	menu();
-    	else
-    	    close();
+	backtomenu();
 	
 }
 void stat_j_courant(){
-	int i,m,jj,mm,aa;
+	int i,m,jj,mm,aa,existe=0;
 	float s=0,max=0,min=d[0].prix;
 	printf("Entrer la date (jj/mm/aaaa): ");	scanf("%d/%d/%d",&jj,&mm,&aa);
-	printf("v= %d\n",v);
-	printf("\nles ventes : \n");
+	printf("\nLes ventes : \n");
 	for(i=0;i<v;i++){
 		printf("%d/%d/%d :\t%.2f\n",d[i].jour,d[i].mois,d[i].annee,d[i].prix);
 		if(jj==d[i].jour && mm==d[i].mois && aa==d[i].annee){
@@ -239,21 +227,16 @@ void stat_j_courant(){
 			if(d[i].prix <min)
 				min=d[i].prix;
 			s+=d[i].prix;
-			
-		}
-		
+			printf("\nLe total des prix des produits vendus :  %.2f DH",s);
+			printf("\nLa moyenne des prix des produits vendus :  %.2f DH",(s/(float)v));
+			printf("\nLe Max des prix des produits vendus :  %.2f DH",max);
+			printf("\nLe Min des prix des produits vendus :  %.2f DH",min);
+		}else existe++;
 	}
-	printf("\nLe total des prix des produits vendus :  %.2f DH",s);
-	printf("\nLa moyenne des prix des produits vendus :  %.2f DH",(s/(float)v));
-	printf("\nLe Max des prix des produits vendus :  %.2f DH",max);
-	printf("\nLe Min des prix des produits vendus :  %.2f DH",min);
-	printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
-    	scanf("%d",&m);
-    	system("cls");
-    	if (m==1)
-        	menu();
-    	else
-    	    close();
+	if(existe!=0)
+		printf("\nAucune vente");
+	
+	backtomenu();
 }
 void supprimer(){
 	int i,j,m,code,e=0;
@@ -268,34 +251,29 @@ void supprimer(){
 		}
 	}if(e==0)
 		printf("\nLe produit n\'existe pas !");
-	printf("\n\n\nEnter 1 to go to the main menu and 0 to exit:");
-    	scanf("%d",&m);
-    	system("cls");
-    	if (m==1)
-        	menu();
-    	else
-    	    close();
-	
+	backtomenu();
+
 }
 void fermer(){
 	printf("Fermeture de l\'application ...");
 }
 
-void menu(){
+int menu(){
 	int c;
+do{
 	system("cls");
-	printf("\t---------------------------------------\n");
-	printf("\t  SYSTEME DE GESTION DE PHARMACIE\n");
-	printf("\t_______________________________________\n");
-	printf("\t1)Ajouter un produit\n");
-	printf("\t2)Lister les produits\n");
-	printf("\t3)Acheter un produit\n");
-	printf("\t4)Rechercher un produit\n");
-	printf("\t5)Alimenter le stock\n");
-	printf("\t6)Statistique de vente\n");
-	printf("\t7)Supprimer un produit\n");
-	printf("\t8)Fermer\n");
-	scanf("%d",&c);
+	printf("\t\t\t ---------------------------------------\n");
+	printf("\t\t\t   SYSTEME DE GESTION DE PHARMACIE\n");
+	printf("\t\t\t _______________________________________\n");
+	printf("\t\t\t 1)Ajouter un produit\n");
+	printf("\t\t\t 2)Lister les produits\n");
+	printf("\t\t\t 3)Acheter un produit\n");
+	printf("\t\t\t 4)Rechercher un produit\n");
+	printf("\t\t\t 5)Alimenter le stock\n");
+	printf("\t\t\t 6)Statistique de vente\n");
+	printf("\t\t\t 7)Supprimer un produit\n");
+	printf("\t\t\t 8)Fermer\n");
+	scanf("%d",&c);}while(c<0 ||c>8);
 	system("cls");
 	switch(c){
 		case 1:	ajouter();break;
